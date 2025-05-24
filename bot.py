@@ -217,15 +217,33 @@ GROUPS = {
     "D": "https://t.me/+JYD3UK1fBiM4NGZi"
 }
 
+PASSED_USERS_FILE = 'passed_users.txt'
+PASSED_USERS = set()
+
+def load_passed_users():
+    try:
+        with open(PASSED_USERS_FILE, 'r') as f:
+            for line in f:
+                PASSED_USERS.add(int(line.strip()))
+    except FileNotFoundError:
+        pass
+
+def save_passed_user(user_id):
+    with open(PASSED_USERS_FILE, 'a') as f:
+        f.write(f"{user_id}\n")
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Начало теста"""
+    user_id = update.effective_user.id
     # Проверка на модератора
     if update.effective_user.username and is_moderator(update.effective_user.username):
         await update.message.reply_text("Добро пожаловать, модератор!")
-    
+    # Проверка, проходил ли пользователь тест
+    if user_id in PASSED_USERS:
+        await update.message.reply_text("Вы уже прошли тест")
+        return ConversationHandler.END
     context.user_data['answers'] = []
     context.user_data['current_question'] = 0
-    
     await ask_question(update, context)
     return QUESTION
 
@@ -277,10 +295,14 @@ async def handle_answer(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
             text=f"Тест завершен!\n\nВаш результат: {dominant_type}\n\n"
                  f"Присоединяйтесь к вашей группе: {GROUPS[dominant_type]}"
         )
+        PASSED_USERS.add(update.effective_user.id)
+        save_passed_user(update.effective_user.id)
         return ConversationHandler.END
 
 def main():
     """Запуск бота"""
+    # Загрузка прошедших пользователей
+    load_passed_users()
     # Создаем приложение
     application = Application.builder().token(os.getenv('TELEGRAM_TOKEN')).build()
     
