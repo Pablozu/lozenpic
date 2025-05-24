@@ -242,6 +242,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if user_id in PASSED_USERS:
         await update.message.reply_text("Вы уже прошли тест")
         return ConversationHandler.END
+    
+    # Отправка приветственного видео
+    await update.message.reply_video(
+        video="7xJMqRyryD4",
+        caption="Добро пожаловать в тест! Посмотрите приветственное видео перед началом."
+    )
+    
     context.user_data['answers'] = []
     context.user_data['current_question'] = 0
     await ask_question(update, context)
