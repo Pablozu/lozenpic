@@ -245,9 +245,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         return ConversationHandler.END
     
     # Отправка приветственного видео
-    await update.message.reply_video(
-        video="7xJMqRyryD4",
-        caption="Добро пожаловать в тест! Посмотрите приветственное видео перед началом."
+    await update.message.reply_text(
+        "Добро пожаловать в тест! Посмотрите приветственное видео перед началом:\n"
+        "https://youtu.be/7xJMqRyryD4"
     )
     
     context.user_data['answers'] = []
