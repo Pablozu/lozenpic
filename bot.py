@@ -292,7 +292,7 @@ def main():
         },
         fallbacks=[],
         per_chat=True,
-        per_message=True
+        per_message=False
     )
     
     # Добавляем обработчик
