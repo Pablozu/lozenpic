@@ -238,7 +238,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     # Проверка на модератора
     if update.effective_user.username and is_moderator(update.effective_user.username):
         await update.message.reply_text("Добро пожаловать, модератор!")
-        return ConversationHandler.END
         
     # Проверка, проходил ли пользователь тест
     if user_id in PASSED_USERS:
